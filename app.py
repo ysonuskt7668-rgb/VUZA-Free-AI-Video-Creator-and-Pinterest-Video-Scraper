@@ -2,40 +2,39 @@ import streamlit as st
 import google.generativeai as genai
 from gtts import gTTS
 
-st.set_page_config(page_title="VUZA AI Success", page_icon="🎬")
-st.title("🎬 VUZA AI: Final Attempt")
+st.set_page_config(page_title="VUZA AI LATEST", page_icon="🚀")
+st.title("🚀 VUZA AI: Latest Version 2024-25")
 
-api_key = st.text_input("Paste your API Key here:", type="password")
-topic = st.text_input("Enter Topic (e.g., Space):")
+# Settings
+api_key = st.text_input("1. Paste Gemini API Key:", type="password")
 
-if st.button("Generate Now"):
+# Latest model name (Aap ise change bhi kar sakte hain)
+model_name = st.text_input("2. Model Name:", value="gemini-3.6-flash")
+
+topic = st.text_input("3. Enter Topic:")
+
+if st.button("Generate AI Content"):
     if api_key and topic:
         try:
+            # Latest Configuration
             genai.configure(api_key=api_key)
+            model = genai.GenerativeModel(model_name)
             
-            # Auto-detect available models to fix 404
-            available_models = [m.name for m in genai.list_models() if 'generateContent' in m.supported_generation_methods]
-            
-            if not available_models:
-                st.error("No models found for this API Key. Check your Google AI Studio permissions.")
-            else:
-                # Pick the first available model
-                selected_model = available_models[0]
-                st.info(f"Using model: {selected_model}")
+            with st.spinner(f"Using {model_name}..."):
+                response = model.generate_content(topic)
                 
-                model = genai.GenerativeModel(selected_model)
-                
-                with st.spinner("AI is thinking..."):
-                    response = model.generate_content(topic)
-                    if response.text:
-                        st.success("Mil Gaya!")
-                        st.write(response.text)
-                        
-                        tts = gTTS(text=response.text, lang='en')
-                        tts.save("voice.mp3")
-                        st.audio("voice.mp3")
+                if response.text:
+                    st.success("Mil gaya output!")
+                    st.write(response.text)
+                    
+                    # Voiceover Generation
+                    tts = gTTS(text=response.text, lang='en')
+                    tts.save("voice.mp3")
+                    st.audio("voice.mp3")
+                else:
+                    st.error("AI returned empty response.")
         except Exception as e:
-            st.error(f"Technical Detail: {e}")
-            st.info("If you see 404, your API key might be restricted or regional.")
+            st.error(f"Error: {e}")
+            st.info("Tip: If 404 occurs, try changing model name to 'gemini-1.5-flash' , 'lyria-3.5' , 'veo-3.1-lite' ,  ,or 'gemini-pro'.")
     else:
-        st.warning("Please enter key and topic.")
+        st.warning("Please fill all fields!")
