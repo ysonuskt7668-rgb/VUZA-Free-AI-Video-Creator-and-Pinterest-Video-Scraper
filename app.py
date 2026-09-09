@@ -1,34 +1,42 @@
 import streamlit as st
 import google.generativeai as genai
 from gtts import gTTS
-import os
 
 st.set_page_config(page_title="AI Video Tool", page_icon="🎬")
-st.title("🎬 VUZA: AI Video & Pinterest Tool")
+st.title("🎬 VUZA AI: Latest Version")
 
-api_key = st.text_input("Enter Google Gemini API Key:", type="password")
-topic = st.text_input("Enter Topic (e.g., Facts about India):")
+api_key = st.text_input("Gemini API Key:", type="password")
+topic = st.text_input("Topic:")
 
-if st.button("Generate Script & Voice"):
-    if not api_key or not topic:
-        st.error("API Key and Topic are required!")
-    else:
+if st.button("Generate Now"):
+    if api_key and topic:
         try:
             genai.configure(api_key=api_key)
-            # Try to use the most stable model name
-            model = genai.GenerativeModel('gemini-pro')
             
-            with st.spinner("AI is thinking..."):
-                response = model.generate_content(f"Write a short 3-line fun fact about {topic}")
-                script_text = response.text
+            # Hum bilkul LATEST experimental aur stable models try karenge
+            # 1. Gemini 2.0 Flash (Latest)
+            # 2. Gemini 1.5 Flash (Stable)
+            model_name = 'gemini-1.5-flash' 
+            
+            model = genai.GenerativeModel(model_name)
+            
+            with st.spinner(f"Using {model_name} to generate..."):
+                # Naya content generation method
+                response = model.generate_content(topic)
                 
-                st.success("Script Generated!")
-                st.write(script_text)
-                
-                # Audio
-                tts = gTTS(text=script_text, lang='en')
-                tts.save("voice.mp3")
-                st.audio("voice.mp3")
-                st.success("Voice is ready to play!")
+                if response.text:
+                    st.success("Success!")
+                    st.write(response.text)
+                    
+                    # Voiceover
+                    tts = gTTS(text=response.text, lang='en')
+                    tts.save("voice.mp3")
+                    st.audio("voice.mp3")
+                else:
+                    st.error("AI response was empty.")
+                    
         except Exception as e:
-            st.error(f"Try again! Error details: {e}")
+            st.error(f"Error: {e}")
+            st.info("Tip: Make sure your API Key is from 'Google AI Studio'.")
+    else:
+        st.warning("Enter Key and Topic!")
