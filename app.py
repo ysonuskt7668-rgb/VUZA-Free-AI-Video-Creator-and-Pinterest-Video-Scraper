@@ -16,7 +16,7 @@ if st.button("Generate Script & Voice"):
         try:
             genai.configure(api_key=api_key)
             # Try to use the most stable model name
-            model = genai.GenerativeModel('gemini-1.5-flash')
+            model = genai.GenerativeModel('gemini-pro')
             
             with st.spinner("AI is thinking..."):
                 response = model.generate_content(f"Write a short 3-line fun fact about {topic}")
