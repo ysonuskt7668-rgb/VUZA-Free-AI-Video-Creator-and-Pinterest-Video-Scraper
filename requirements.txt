@@ -5,3 +5,7 @@ moviepy==1.0.3
 requests
 gTTS
 python-dotenv
+fastapi
+uvicorn
+python-multipart
+httpx
