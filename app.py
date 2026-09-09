@@ -22,7 +22,7 @@ with tab1:
             try:
                 with st.spinner("AI is generating script & voice..."):
                     genai.configure(api_key=api_key)
-                    model = genai.GenerativeModel('gemini-1.5-flash')
+                    model = genai.GenerativeModel('gemini-2.0-flash')
                     response = model.generate_content(f"Write a short 30-second YouTube shorts script about: {topic}")
                     script_text = response.text
                     
